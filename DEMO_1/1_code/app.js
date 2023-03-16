@@ -1,5 +1,6 @@
 const http = require("http");
-const querystr = require('querystring');
+var sql= require('mysql');
+
 const webServer = http.createServer(applicationServer);
 webServer.listen(8000);
 
