@@ -1,7 +1,5 @@
 {
   "dependencies": {
-    "start": "node ./bin/www",
-    "devstart": "DEBUG=myapp:* nodemon ./bin/www",
     "mysql": "^2.18.1"
   }
 }
