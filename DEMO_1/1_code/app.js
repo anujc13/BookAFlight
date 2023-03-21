@@ -10,6 +10,6 @@ const webServer = http.createServer(function (req, res) {
 
 var connection = sql.createConnection({
     host : "localhost",
-    user: "root",
-
+    user: "root", 
+    
 })
