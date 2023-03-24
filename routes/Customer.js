@@ -10,12 +10,12 @@ router.post("/signup", controller.signup);
 router.post("/login", controller.login);
 
 // get points - must be logged in
-router.get("/points", validateToken, controller.points);
+router.get("/viewpoints", validateToken, controller.viewPoints);
 
 // change password - must be logged in
 router.patch("/changepassword", validateToken, controller.changePassword);
 
 // deleteAccount - must be logged in
-router.delete("/deleteAccount", validateToken, controller.deleteAccount);
+router.delete("/deleteaccount", validateToken, controller.deleteAccount);
 
 module.exports = router;

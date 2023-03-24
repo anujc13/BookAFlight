@@ -4,9 +4,10 @@ const controller = require("../controllers/BookingController");
 const { validateToken } = require("../middleware/auth");
 
 // create booking - must be logged in
-router.post("/create", validateToken, controller.create);
+router.post("/reserve", validateToken, controller.reserve);
 
+/*
 // cancel booking - must be logged in
 router.post("/cancel", validateToken, controller.cancel);
-
+*/
 module.exports = router;
