@@ -41,6 +41,7 @@ db.sequelize.sync().then(() => {
             // populate seats for Boeing 737
             await db.planeModel.findOne().then(async res => {
                 let modelId = res.dataValues.id;
+                
                 // first class
                 for (let i = 3; i < 7; i++) {
                     for (let j = 1; j < 7; j++) {
