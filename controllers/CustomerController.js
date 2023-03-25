@@ -41,8 +41,6 @@ exports.login = async (req, res) => {
             { email: user.email, id: user.id }, 
             "secretstring",
         );
-        // user.rememberToken = accessToken;
-        // await user.save();
         await customer.update({ rememberToken: accessToken }, { where: { id: user.id } });
         return res.status(200).json(accessToken);
         
@@ -57,7 +55,8 @@ exports.changePassword = async (req, res) => {
     bcrypt.compare(oldPassword, user.password).then(async (match) => {
         if (!match) return res.json({ error: "Incorrect password!"})
         bcrypt.hash(newPassword, 10).then(async (hash) => {
-            await user.update({password: hash}, {where: { rememberToken: accessToken }});
+            await user.update({password: hash}, {where: { id: user.id }});
+            res.status(200).json("Successfully changed password!");
         });
     });
 };
