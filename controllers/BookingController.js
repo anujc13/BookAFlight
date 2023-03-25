@@ -1,6 +1,7 @@
 const { customer } = require("../models");
 const { booking } = require("../models");
 const { ticket } = require("../models");
+const stripe = require("stripe")("sk_test_51MpHOVFvgDsA0B2SrxeC2mgQXnVGQEF4bfGNUURf54qVdCdHCA0dotnOQOd6ig5DGi1hJlFsoVuhPbm7BrvU7mCb00uZC3KmXW");
 
 // reserve booking - must be logged in
 exports.reserve = async (req, res) => {
@@ -37,12 +38,42 @@ exports.reserve = async (req, res) => {
     });
     
 };
-/*
-// confirm booking
-exports.confirm = async (req, res) => {
 
+// booking checkout
+exports.checkout = async (req, res) => {
+    const { bookingId } = req.body;
+
+    // find corresponding booking
+    await ticket.findAll({ where: { "bookingId": bookingId } }).then(async match => {
+        
+        try {
+            const session = await stripe.checkout.sessions.create({
+                payment_method_types: ["card"],
+                mode: "payment",
+                line_items: match.map(t => {
+                    return {
+                        price_data: {
+                            currency: "usd",
+                            product_data: {
+                                name: "Ticket",
+                            },
+                            unit_amount: t.dataValues.price * 100, // price in cents
+                        },
+                        quantity: 1,
+                    }
+                }),
+                success_url: "http://localhost:3000",
+                cancel_url: "http://localhost:3000",
+            });
+            res.json({ url: session.url });
+        } catch (e) {
+            res.status(500).json({ error: e });
+        }
+    });
+    
 };
 
+/*
 // cancel booking
 exports.cancel = async (req, res) => {
 
