@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const { customer } = require("../models");
 const { sign } = require("jsonwebtoken");
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey("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")
 
 // signup
 exports.signup = async (req, res) => {
@@ -20,8 +22,26 @@ exports.signup = async (req, res) => {
             phone: profile.phone,
             preferences: profile.preferences,
         });
+        
         return res.status(200).json("Customer created succesfully!");
     });
+
+    //Confirmation email using twilio sendgrid
+    const msg = {
+        to: profile.email, // Change to your recipient
+        from: 'udayan19.rai@gmail.com', // Change to your verified sender
+        subject: 'BookAFlight account creation successful',
+        text: 'You account was successfully created!',
+        html: '<strong>Enjoy your bokking experience!</strong>',
+      }
+      sgMail
+        .send(msg)
+        .then(() => {
+          console.log('Email sent')
+        })
+        .catch((error) => {
+          console.error(error)
+        })
 };
 
 // login
