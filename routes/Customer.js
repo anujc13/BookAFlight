@@ -3,8 +3,14 @@ const router = express.Router();
 const controller = require("../controllers/CustomerController");
 const { validateToken } = require("../middleware/auth");
 
+// view signup page
+router.get("/signup", controller.signupPage);
+
 // signup
 router.post("/signup", controller.signup);
+
+// view login page
+router.get("/login", controller.loginPage);
 
 // login
 router.post("/login", controller.login);

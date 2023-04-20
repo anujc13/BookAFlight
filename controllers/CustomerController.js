@@ -1,8 +1,16 @@
 const bcrypt = require("bcrypt");
 const { customer } = require("../models");
 const { sign } = require("jsonwebtoken");
-const sgMail = require('@sendgrid/mail')
+const sgMail = require('@sendgrid/mail');
+const path = require("path");
 sgMail.setApiKey("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")
+
+
+
+// signup page
+exports.signupPage = async (req, res) => {
+    res.sendFile(path.join(__dirname + "/../views/signup.html"));
+}
 
 // signup
 exports.signup = async (req, res) => {
@@ -43,6 +51,11 @@ exports.signup = async (req, res) => {
           console.error(error)
         })
 };
+
+// login page
+exports.loginPage = async (req, res) => {
+    res.sendFile(path.join(__dirname + "/../views/login.html"));
+}
 
 // login
 exports.login = async (req, res) => {

@@ -1,9 +1,9 @@
 const express = require("express");
-const app = express();
+const path = require("path");
 const db = require("./models");
+const app = express();
 const PORT = 3000;
 
-// middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -14,6 +14,10 @@ const flightRoute = require("./routes/Flight");
 const planeModelRoute = require("./routes/PlaneModel");
 const seatPositionRoute = require("./routes/SeatPosition");
 const ticketRoute = require("./routes/Ticket");
+
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname + "/views/index.html"));
+});
 
 app.use("/booking", bookingRoute);
 app.use("/customer", customerRoute);
@@ -28,6 +32,7 @@ db.sequelize.sync().then(() => {
         console.log(`Server listening at http://localhost:${PORT}`);
     });
 
+    /*
     // seeding database
     db.planeModel.count().then(async numPlaneModels => {
         if (numPlaneModels === 0) {
@@ -152,5 +157,8 @@ db.sequelize.sync().then(() => {
             });
         }
     });
+    */
 
+}).catch(err => {
+    console.log("Could not start database.");
 });
