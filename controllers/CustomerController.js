@@ -6,6 +6,10 @@ const path = require("path");
 sgMail.setApiKey("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")
 
 
+exports.checkExists = async (req, res) => {
+    console.log("asdfkjlasdfjsdfkla");
+}
+
 
 // signup page
 exports.signupPage = async (req, res) => {
@@ -41,11 +45,11 @@ exports.signup = async (req, res) => {
         subject: 'BookAFlight account creation successful',
         text: 'You account was successfully created!',
         html: '<strong>Enjoy your bokking experience!</strong>',
-      }
-      sgMail
+    }
+    sgMail
         .send(msg)
         .then(() => {
-          console.log('Email sent')
+            console.log('Email sent')
         })
         .catch((error) => {
           console.error(error)

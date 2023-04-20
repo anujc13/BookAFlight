@@ -4,8 +4,109 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create an Account</title>
+  <style>
+    input.validate:focus:invalid {
+      outline: 0;
+      border: 2px solid #ee6d69;
+      border-radius: 5px;
+    }
+
+    input.validate:valid[type="text"], 
+    input.validate:valid[type="password"], 
+    input.validate:valid[type="email"],
+    input.validate:valid[tupe="tel"] {
+      outline: 0;
+      border: 2px solid #47cc55;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
-  
+  <form action="/signup" method="post">
+    <fieldset>
+      <legend>Create New Account</legend>
+
+      <label for="email">Email: 
+        <input type="email" id="email" name="email" onblur="checkEmail()" required>
+        <span id="emailEmptyError" style="display: none; color: red;">This field is required.</span>
+        <span id="emailInvalidError" style="display: none; color: red;">Invalid email.</span>
+        <span id="emailTakenError" style="display: none; color: red;">Email taken.</span>
+      </label>
+
+      <label for="password">Password: 
+        <input type="password" id="password" class="validate" onblur="checkPassword()" required>
+        <p>Password must contain:
+          <div> - 8-20 characters</div>
+          <div> - 1 uppercase letter</div>
+          <div> - 1 lowercase letter</div>
+          <div> - 1 number</div>
+          <div> - 1 special character</div>
+        </p>
+        <span id="passEmptyError" style="display: none; color: red;">This field is required.</span>
+        <span id="passInvalidError" style="display: none; color: red;">Invalid password.</span>
+      </label>
+      
+      <label for="confirmPass">Confirm Password: 
+        <input type="password" id="confirmPass" class="validate" required>
+      </label>
+
+
+      <label for="First Name">First Name: 
+        <input type="text" id="fname" name="fname" required>
+      </label>
+
+      <label for="Last Name">Last Name: 
+        <input type="text" id="lname" name="lname" required>
+      </label>
+      
+
+      <label for="Phone Number">Phone Number: 
+        <input type="tel" id="tel" name="tel" required>
+      </label>
+
+
+      <button type="submit">Create Account</button>
+
+      <div class="error">
+        <!-- display error message here (if any) -->
+      </div>
+    </fieldset>
+  </form>
 </body>
 </html>
+
+<script type="text/javascript">
+
+  const checkEmail = () => {
+    let email = document.getElementById("email").value;
+    let emailRegex = /^[^@]+@[^@]+\.[^@]+$/;
+    let emailEmptyError = document.getElementById("emailEmptyError").value;
+    let emailInvalidError = document.getElementById("emailInvalidError").value;
+    let emailTakenError = document.getElementById("emailTakenError").value;
+
+    if (email === "") {
+      emailEmptyError.style.display = "inline";
+    } else {
+      emailEmptyError.style.display = "none";
+    }
+    if (!emailRegex.test(email)) {
+      emailInvalidError.style.display = "inline";
+    } else {
+      emailInvalidError.style.display = "none";
+    }
+
+  }
+
+  const checkPassword = (req, res) => {
+    let password = document.getElementById("password").value;
+    let passwordRegex = /^(?=.*[\d\W])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
+    let 
+    
+
+  }
+
+
+  const checkExists = (req, res) => {
+
+  }
+</script>
