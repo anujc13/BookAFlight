@@ -47,6 +47,16 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             defaultValue: "",
         },
+        confirmEmail: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0,
+        },
+        confirmTel: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0,
+        },
 
     });
 

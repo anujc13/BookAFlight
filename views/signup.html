@@ -47,21 +47,19 @@
       </label>
       
       <label for="confirmPass">Confirm Password: 
-        <input type="password" id="confirmPass" class="validate" required>
+        <input type="password" id="confirmPass" class="validate" onblur="checkConfirm()" required>
       </label>
 
-
       <label for="First Name">First Name: 
-        <input type="text" id="fname" name="fname" required>
+        <input type="text" id="fname" name="fname" onblur="checkFName()" required>
       </label>
 
       <label for="Last Name">Last Name: 
-        <input type="text" id="lname" name="lname" required>
+        <input type="text" id="lname" name="lname" onblur="checkLName()" required>
       </label>
       
-
       <label for="Phone Number">Phone Number: 
-        <input type="tel" id="tel" name="tel" required>
+        <input type="tel" id="tel" name="tel" onblur="checkTel()" required>
       </label>
 
 
@@ -100,11 +98,19 @@
   const checkPassword = (req, res) => {
     let password = document.getElementById("password").value;
     let passwordRegex = /^(?=.*[\d\W])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
-    let 
-    
+  }
+
+  const checkConfirm = () => {
 
   }
 
+  const checkFName = () => {
+
+  }
+
+  const checkLName = () => {
+    
+  }
 
   const checkExists = (req, res) => {
 

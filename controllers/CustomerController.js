@@ -6,10 +6,6 @@ const path = require("path");
 sgMail.setApiKey("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")
 
 
-exports.checkExists = async (req, res) => {
-    console.log("asdfkjlasdfjsdfkla");
-}
-
 
 // signup page
 exports.signupPage = async (req, res) => {

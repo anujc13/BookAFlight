@@ -24,4 +24,6 @@ router.patch("/changepassword", validateToken, controller.changePassword);
 // deleteAccount - must be logged in
 router.delete("/deleteaccount", validateToken, controller.deleteAccount);
 
+// invalid methods
+
 module.exports = router;
