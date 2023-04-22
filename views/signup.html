@@ -4,37 +4,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create an Account</title>
-  <style>
-    input.validate:focus:invalid {
-      outline: 0;
-      border: 2px solid #ee6d69;
-      border-radius: 5px;
-    }
-
-    input.validate:valid[type="text"], 
-    input.validate:valid[type="password"], 
-    input.validate:valid[type="email"],
-    input.validate:valid[tupe="tel"] {
-      outline: 0;
-      border: 2px solid #47cc55;
-      border-radius: 5px;
-    }
-  </style>
 </head>
 <body>
   <form action="/signup" method="post">
     <fieldset>
-      <legend>Create New Account</legend>
+      <legend>Create an Account</legend>
 
       <label for="email">Email: 
-        <input type="email" id="email" name="email" onblur="checkEmail()" required>
-        <span id="emailEmptyError" style="display: none; color: red;">This field is required.</span>
+        <input type="email" id="email" name="email" style="border-radius: 5px;" onblur="checkEmail()" required>
         <span id="emailInvalidError" style="display: none; color: red;">Invalid email.</span>
         <span id="emailTakenError" style="display: none; color: red;">Email taken.</span>
       </label>
 
       <label for="password">Password: 
-        <input type="password" id="password" class="validate" onblur="checkPassword()" required>
+        <input type="password" id="password" style="border-radius: 5px;" onblur="checkPassword()" required>
+        <span id="passInvalidError" style="display: none; color: red;">Invalid password.</span>
         <p>Password must contain:
           <div> - 8-20 characters</div>
           <div> - 1 uppercase letter</div>
@@ -42,26 +26,24 @@
           <div> - 1 number</div>
           <div> - 1 special character</div>
         </p>
-        <span id="passEmptyError" style="display: none; color: red;">This field is required.</span>
-        <span id="passInvalidError" style="display: none; color: red;">Invalid password.</span>
       </label>
       
       <label for="confirmPass">Confirm Password: 
-        <input type="password" id="confirmPass" class="validate" onblur="checkConfirm()" required>
+        <input type="password" id="confirmPass" style="border-radius: 5px;" onblur="checkConfirmPass()" required>
+        <span id="confirmPassInvalidError" style="display: none; color: red;">Passwords must match.</span>
       </label>
 
       <label for="First Name">First Name: 
-        <input type="text" id="fname" name="fname" onblur="checkFName()" required>
+        <input type="text" id="fname" name="fname" style="border-radius: 5px;" onblur="checkFName()" required>
       </label>
 
       <label for="Last Name">Last Name: 
-        <input type="text" id="lname" name="lname" onblur="checkLName()" required>
+        <input type="text" id="lname" name="lname" style="border-radius: 5px;" onblur="checkLName()" required>
       </label>
       
       <label for="Phone Number">Phone Number: 
-        <input type="tel" id="tel" name="tel" onblur="checkTel()" required>
+        <input type="tel" id="tel" name="tel" style="border-radius: 5px;" onblur="checkTel()" required>
       </label>
-
 
       <button type="submit">Create Account</button>
 
@@ -76,32 +58,50 @@
 <script type="text/javascript">
 
   const checkEmail = () => {
-    let email = document.getElementById("email").value;
+    let email = document.getElementById("email");
     let emailRegex = /^[^@]+@[^@]+\.[^@]+$/;
-    let emailEmptyError = document.getElementById("emailEmptyError").value;
-    let emailInvalidError = document.getElementById("emailInvalidError").value;
-    let emailTakenError = document.getElementById("emailTakenError").value;
+    let emailInvalidError = document.getElementById("emailInvalidError");
+    let emailTakenError = document.getElementById("emailTakenError");
 
-    if (email === "") {
-      emailEmptyError.style.display = "inline";
-    } else {
-      emailEmptyError.style.display = "none";
-    }
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(email.value)) {
       emailInvalidError.style.display = "inline";
+      email.style.border = "2px solid #ee6d69";
     } else {
       emailInvalidError.style.display = "none";
+      email.style.border = "2px solid #47cc55";
     }
+
+    // check for existence must still be performed
 
   }
 
   const checkPassword = (req, res) => {
-    let password = document.getElementById("password").value;
+    let password = document.getElementById("password");
     let passwordRegex = /^(?=.*[\d\W])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
+    let passInvalidError = document.getElementById("passInvalidError");
+
+    if (!passwordRegex.test(password.value)) {
+      passInvalidError.style.display = "inline";
+      password.style.border = "2px solid #ee6d69";
+    } else {
+      passInvalidError.style.display = "none";
+      password.style.border = "2px solid #47cc55";
+    }
+
   }
 
-  const checkConfirm = () => {
+  const checkConfirmPass = () => {
+    let password = document.getElementById("password");
+    let confirmPass = document.getElementById("confirmPass");
+    let confirmPassInvalidError = document.getElementById("confirmPassInvalidError");
 
+    if (password.value !== confirmPass.value) {
+      confirmPassInvalidError.style.display = "inline";
+      confirmPass.style.border = "2px solid #ee6d69";
+    } else {
+      confirmPassInvalidError.style.display = "none";
+      confirmPass.style.border = "2px solid #47cc55";
+    }
   }
 
   const checkFName = () => {
