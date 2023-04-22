@@ -35,18 +35,20 @@
 
       <label for="First Name">First Name: 
         <input type="text" id="fname" name="fname" style="border-radius: 5px;" onblur="checkFName()" required>
+        <span id="firstNameError" style="display: none; color: red;">This field is required.</span>
       </label>
 
       <label for="Last Name">Last Name: 
         <input type="text" id="lname" name="lname" style="border-radius: 5px;" onblur="checkLName()" required>
+        <span id="firstNameError" style="display: none; color: red;">This field is required.</span>
       </label>
       
       <label for="Phone Number">Phone Number: 
         <input type="tel" id="tel" name="tel" style="border-radius: 5px;" onblur="checkTel()" required>
+        <span id="firstNameError" style="display: none; color: red;">This field is required.</span>
       </label>
 
       <button type="submit">Create Account</button>
-
       <div class="error">
         <!-- display error message here (if any) -->
       </div>
@@ -74,7 +76,6 @@
     // check for existence must still be performed
 
   }
-
   const checkPassword = (req, res) => {
     let password = document.getElementById("password");
     let passwordRegex = /^(?=.*[\d\W])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
@@ -89,7 +90,6 @@
     }
 
   }
-
   const checkConfirmPass = () => {
     let password = document.getElementById("password");
     let confirmPass = document.getElementById("confirmPass");

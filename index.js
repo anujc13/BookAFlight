@@ -16,15 +16,17 @@ const seatPositionRoute = require("./routes/SeatPosition");
 const ticketRoute = require("./routes/Ticket");
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname + "/views/index.html"));
+    res.sendFile(path.join(__dirname, "/views/index.html"));
 });
-
 app.use("/booking", bookingRoute);
 app.use("/customer", customerRoute);
 app.use("/flight", flightRoute);
 app.use("/planeModel", planeModelRoute);
 app.use("/seatPosition", seatPositionRoute);
 app.use("/ticket", ticketRoute);
+app.use((req, res) => {
+    res.sendFile(path.join(__dirname, "/views/invalidpage.html"));
+});
 
 db.sequelize.sync().then(() => {
 

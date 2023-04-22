@@ -9,7 +9,7 @@ sgMail.setApiKey("SG.qpcQMZxvQS-CEMRgEGqgfA.WbBqugpM1a7O-gDTIi9VTSsh68RjtjzQO3Q0
 
 // signup page
 exports.signupPage = async (req, res) => {
-    res.sendFile(path.join(__dirname + "/../views/signup.html"));
+    res.sendFile(path.join(__dirname, "/../views/signup.html"));
 }
 
 // signup
@@ -54,7 +54,7 @@ exports.signup = async (req, res) => {
 
 // login page
 exports.loginPage = async (req, res) => {
-    res.sendFile(path.join(__dirname + "/../views/login.html"));
+    res.sendFile(path.join(__dirname, "/../views/login.html"));
 }
 
 // login

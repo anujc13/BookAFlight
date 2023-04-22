@@ -1,0 +1,69 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search for Flights</title>
+    <script>
+        let autocompleteSource;
+        let autocompleteDestination;
+        const initAutocompleteSource = () => {
+            autocompleteSource = new google.maps.places.Autocomplete(
+                document.getElementById("autocompleteSource"),
+                {
+                    types: ["airport", "locality"],
+                    fields: ["place_id", "geometry", "name"]
+                }
+            );
+            autocompleteSource.addListener("place_changed", onSourceChanged);
+        }
+        const initAutocompleteDestination = () => {
+            autocompleteDestination = new google.maps.places.Autocomplete(
+                document.getElementById("autocompleteDestination"),
+                {
+                    types: ["airport", "locality"],
+                    fields: ["place_id", "geometry", "name"]
+                }
+            );
+            autocompleteDestination.addListener("place_changed", onDestinationChanged);
+        }
+        const onSourceChanged = () => {
+            let place = autocompleteSource.getPlace();
+            if (!place.geometry) {
+                document.getElementById("autocompleteSource").placeholder = "Airport or city";
+            } else {
+                document.getElementById("sourceDetails").innerHTML = place.name;
+            }
+        }
+        const onDestinationChanged = () => {
+            let place = autocompleteDestination.getPlace();
+            if (!place.geometry) {
+                document.getElementById("autocompleteDestination").placeholder = "Airport or city";
+            } else {
+                document.getElementById("destinationDetails").innerHTML = place.name;
+            }
+        }
+        window.addEventListener('load', initAutocompleteSource);
+        window.addEventListener('load', initAutocompleteDestination);
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvDzMfyE1DH1CM9mNy9IrLAE3bQs-pYCM&libraries=places&callback=initAutocomplete" async defer></script>
+</head>
+<body>
+    <header>
+        <h1>Search for Flights</h1>
+    </header>
+    <form>
+        <fieldset>
+            <div>Where are you departing from?</div>
+            <input id="autocompleteSource" placeholder="Airport or city" style="width: 400px; border-radius: 5px;" type="text"/>
+            <span id="sourceDetails" type="text"></span>
+            
+            <div>Where are you going to?</div>
+            <input id="autocompleteDestination" placeholder="Airport or city" style="width: 400px; border-radius: 5px;" type="text"/>
+            <span id="destinationDetails" type="text"></span>
+            <button type="submit">Search</button>
+        </fieldset>
+    </form>
+    
+</body>
+</html>

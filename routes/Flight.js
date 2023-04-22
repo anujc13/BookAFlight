@@ -9,4 +9,7 @@ router.post("/createflight", validateToken, controller.createFlight);
 // filter flights
 router.get("/search", controller.search);
 
+// get flight search page
+router.get("/", controller.flightPage);
+
 module.exports = router;

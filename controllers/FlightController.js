@@ -1,4 +1,5 @@
 const { flight } = require("../models");
+const path = require("path");
 
 exports.createFlight = async(req, res) => {
     const {
@@ -47,3 +48,7 @@ exports.search = async (req, res) => {
         res.status(200).json(await flight.findAll({ where: filter }));
     }
 };
+
+exports.flightPage = (req, res) => {
+    res.sendFile(path.join(__dirname, "/../views/search.html"));
+}
