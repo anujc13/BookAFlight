@@ -1,7 +1,7 @@
 const { customer } = require("../models");
 const { booking } = require("../models");
 const { ticket } = require("../models");
-const stripe = require("stripe")(process.env.STRIPE_API_KEY);
+const stripe = require("stripe")("sk_test_51MpHOVFvgDsA0B2SrxeC2mgQXnVGQEF4bfGNUURf54qVdCdHCA0dotnOQOd6ig5DGi1hJlFsoVuhPbm7BrvU7mCb00uZC3KmXW");
 
 // reserve booking - must be logged in
 exports.reserve = async (req, res) => {

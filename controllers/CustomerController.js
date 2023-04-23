@@ -12,6 +12,11 @@ exports.signupPage = async (req, res) => {
     res.sendFile(path.join(__dirname, "/../views/signup.html"));
 }
 
+// login page
+exports.loginPage = async (req, res) => {
+    res.sendFile(path.join(__dirname, "/../views/login.html"));
+}
+
 // signup
 exports.signup = async (req, res) => {
     const profile = req.body;
@@ -51,11 +56,6 @@ exports.signup = async (req, res) => {
           console.error(error)
         })
 };
-
-// login page
-exports.loginPage = async (req, res) => {
-    res.sendFile(path.join(__dirname, "/../views/login.html"));
-}
 
 // login
 exports.login = async (req, res) => {
@@ -113,3 +113,16 @@ exports.deleteAccount = async (req, res) => {
         }
     });
 };
+
+// checkExists
+exports.checkExists = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await customer.findOne({ where : { email : email }});
+        if (!user) return res.json({ exists: false });
+        return res.json({ exists: true });
+    } catch (err) {
+        console.log("error");
+        return res.json({ exists: false });
+    }
+}

@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const db = require("./models");
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -18,21 +18,25 @@ const ticketRoute = require("./routes/Ticket");
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "/views/index.html"));
 });
+
 app.use("/booking", bookingRoute);
 app.use("/customer", customerRoute);
 app.use("/flight", flightRoute);
 app.use("/planeModel", planeModelRoute);
 app.use("/seatPosition", seatPositionRoute);
 app.use("/ticket", ticketRoute);
+
+// page not found
 app.use((req, res) => {
     res.sendFile(path.join(__dirname, "/views/invalidpage.html"));
 });
 
 db.sequelize.sync().then(() => {
-
     app.listen(PORT, () => {
         console.log(`Server listening at http://localhost:${PORT}`);
     });
+
+
 
     /*
     // seeding database

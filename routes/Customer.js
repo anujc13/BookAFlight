@@ -24,6 +24,9 @@ router.patch("/changepassword", validateToken, controller.changePassword);
 // deleteAccount - must be logged in
 router.delete("/deleteaccount", validateToken, controller.deleteAccount);
 
+// checkExists - check if user is in database
+router.post("/checkExists", controller.checkExists);
+
 // invalid methods
 
 module.exports = router;
