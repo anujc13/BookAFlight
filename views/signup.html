@@ -1,171 +1,171 @@
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create an Account</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Create an Account</title>
 </head>
 <body onload="checkAll()"">
-  <form action="/signup" method="POST">
-    <fieldset>
-      <legend>Create an Account</legend>
+	<form action="/signup" method="POST">
+		<fieldset>
+			<legend>Create an Account</legend>
 
-      <label for="email">Email: 
-        <input type="email" id="email" name="email" style="border-radius: 5px;" onblur="checkEmail()" required>
-        <span id="emailInvalidError" style="display: none; color: red;">Invalid email.</span>
-        <span id="emailTakenError" style="display: none; color: red;">Email taken.</span>
-      </label><br/>
+			<label for="email">Email: 
+				<input type="email" id="email" name="email" style="border-radius: 5px;" onblur="checkEmail()" required>
+				<span id="emailInvalidError" style="display: none; color: red;">Invalid email.</span>
+				<span id="emailTakenError" style="display: none; color: red;">Email taken.</span>
+			</label><br/>
 
-      <label for="password">Password: 
-        <input type="password" id="password" style="border-radius: 5px;" onblur="checkPassword()" required>
-        <span id="passInvalidError" style="display: none; color: red;">Invalid password.</span>
-        <p>Password must contain:
-          <div> - 8-20 characters</div>
-          <div> - 1 uppercase letter</div>
-          <div> - 1 lowercase letter</div>
-          <div> - 1 number</div>
-          <div> - 1 special character</div>
-        </p>
-      </label><br/>
-      
-      <label for="confirmPass">Confirm Password: 
-        <input type="password" id="confirmPass" style="border-radius: 5px;" onblur="checkConfirmPass()" required>
-        <span id="confirmPassInvalidError" style="display: none; color: red;">Passwords must match.</span>
-      </label><br/>
+			<label for="password">Password: 
+				<input type="password" id="password" style="border-radius: 5px;" onblur="checkPassword()" required>
+				<span id="passInvalidError" style="display: none; color: red;">Invalid password.</span>
+				<p>Password must contain:
+					<div> - 8-20 characters</div>
+					<div> - 1 uppercase letter</div>
+					<div> - 1 lowercase letter</div>
+					<div> - 1 number</div>
+					<div> - 1 special character</div>
+				</p>
+			</label><br/>
+			
+			<label for="confirmPass">Confirm Password: 
+				<input type="password" id="confirmPass" style="border-radius: 5px;" onblur="checkConfirmPass()" required>
+				<span id="confirmPassInvalidError" style="display: none; color: red;">Passwords must match.</span>
+			</label><br/>
 
-      <label for="fName">First Name: 
-        <input type="text" id="fName" name="fName" style="border-radius: 5px;" onblur="checkFName()" required>
-        <span id="fNameError" style="display: none; color: red;">This field is required.</span>
-      </label><br/>
+			<label for="fName">First Name: 
+				<input type="text" id="fName" name="fName" style="border-radius: 5px;" onblur="checkFName()" required>
+				<span id="fNameError" style="display: none; color: red;">This field is required.</span>
+			</label><br/>
 
-      <label for="lName">Last Name: 
-        <input type="text" id="lName" name="lName" style="border-radius: 5px;" onblur="checkLName()" required>
-        <span id="lNameError" style="display: none; color: red;">This field is required.</span>
-      </label><br/>
-      
-      <label for="tel">Phone Number: 
-        <input type="tel" id="tel" name="tel" style="border-radius: 5px;" onblur="checkTel()" required>
-        <span id="telError" style="display: none; color: red;">This field is required.</span>
-      </label><br/>
+			<label for="lName">Last Name: 
+				<input type="text" id="lName" name="lName" style="border-radius: 5px;" onblur="checkLName()" required>
+				<span id="lNameError" style="display: none; color: red;">This field is required.</span>
+			</label><br/>
+			
+			<label for="tel">Phone Number: 
+				<input type="tel" id="tel" name="tel" style="border-radius: 5px;" onblur="checkTel()" required>
+				<span id="telError" style="display: none; color: red;">This field is required.</span>
+			</label><br/>
 
-      <button type="submit">Create Account</button>
-      <div class="error">
-        <!-- display error message here (if any) -->
-      </div>
-    </fieldset>
-  </form>
+			<button type="submit">Create Account</button>
+			<div class="error">
+				<!-- display error message here (if any) -->
+			</div>
+		</fieldset>
+	</form>
 </body>
 </html>
 
 <script type="text/javascript">
-  const form = new Array(7).fill(0);
-  const checkEmail = async () => {
-    let email = document.getElementById("email");
-    let emailRegex = /^[^@]+@[^@]+\.[^@]+$/;
-    let emailInvalidError = document.getElementById("emailInvalidError");
-    let emailTakenError = document.getElementById("emailTakenError");
+	const form = new Array(7).fill(0);
+	const checkEmail = async () => {
+		let email = document.getElementById("email");
+		let emailRegex = /^[^@]+@[^@]+\.[^@]+$/;
+		let emailInvalidError = document.getElementById("emailInvalidError");
+		let emailTakenError = document.getElementById("emailTakenError");
 
-    if (!emailRegex.test(email.value)) {
-      emailInvalidError.style.display = "inline";
-      email.style.border = "2px solid #ee6d69";
-      emailTakenError.style.display = "none";
-      form[0] = 0;
-      checkAll();
-      return;
-    } else {
-      emailInvalidError.style.display = "none";
-    }
-    let check = await fetch("/customer/checkExists", {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      method: "POST",
-      body: JSON.stringify({ email: email.value }),
-    });
-    check = await check.json();
-    if (check.exists) {
-      emailTakenError.style.display = "inline";
-      email.style.border = "2px solid #ee6d69";
-      form[0] = 0;
-      checkAll();
-      return;
-    } else {
-      emailTakenError.style.display = "none";
-      email.style.border = "2px solid #47cc55";
-      form[0] = 1;
-      checkAll();
-    }
-  }
-  const checkPassword = (req, res) => {
-    let password = document.getElementById("password");
-    let passwordRegex = /^(?=.*[\d\W])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
-    let passInvalidError = document.getElementById("passInvalidError");
+		if (!emailRegex.test(email.value)) {
+			emailInvalidError.style.display = "inline";
+			email.style.border = "2px solid #ee6d69";
+			emailTakenError.style.display = "none";
+			form[0] = 0;
+			checkAll();
+			return;
+		} else {
+			emailInvalidError.style.display = "none";
+		}
+		let check = await fetch("/customer/checkExists", {
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			method: "POST",
+			body: JSON.stringify({ email: email.value }),
+		});
+		check = await check.json();
+		if (check.exists) {
+			emailTakenError.style.display = "inline";
+			email.style.border = "2px solid #ee6d69";
+			form[0] = 0;
+			checkAll();
+			return;
+		} else {
+			emailTakenError.style.display = "none";
+			email.style.border = "2px solid #47cc55";
+			form[0] = 1;
+			checkAll();
+		}
+	}
+	const checkPassword = (req, res) => {
+		let password = document.getElementById("password");
+		let passwordRegex = /^(?=.*[\d\W])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
+		let passInvalidError = document.getElementById("passInvalidError");
 
-    if (!passwordRegex.test(password.value)) {
-      passInvalidError.style.display = "inline";
-      password.style.border = "2px solid #ee6d69";
-      form[1] = 0;
-    } else {
-      passInvalidError.style.display = "none";
-      password.style.border = "2px solid #47cc55";
-      form[1] = 1;
-    }
-    checkConfirmPass();
-    checkAll();
-  }
-  const checkConfirmPass = () => {
-    let password = document.getElementById("password");
-    let confirmPass = document.getElementById("confirmPass");
-    let confirmPassInvalidError = document.getElementById("confirmPassInvalidError");
+		if (!passwordRegex.test(password.value)) {
+			passInvalidError.style.display = "inline";
+			password.style.border = "2px solid #ee6d69";
+			form[1] = 0;
+		} else {
+			passInvalidError.style.display = "none";
+			password.style.border = "2px solid #47cc55";
+			form[1] = 1;
+		}
+		checkConfirmPass();
+		checkAll();
+	}
+	const checkConfirmPass = () => {
+		let password = document.getElementById("password");
+		let confirmPass = document.getElementById("confirmPass");
+		let confirmPassInvalidError = document.getElementById("confirmPassInvalidError");
 
-    if (password.value !== confirmPass.value) {
-      confirmPassInvalidError.style.display = "inline";
-      confirmPass.style.border = "2px solid #ee6d69";
-      form[2] = 0;
-    } else {
-      confirmPassInvalidError.style.display = "none";
-      confirmPass.style.border = "2px solid #47cc55";
-      form[2] = 1;
-    }
-    checkAll();
-  }
-  const checkFName = () => {
-    let fName = document.getElementById("fName");
-    let fNameError = document.getElementById("fNameError");
-    if (fName.value === "") {
-      fNameError.style.display = "inline";
-      fName.style.border = "2px solid #ee6d69";
-      form[3] = 0;
-    } else {
-      fNameError.style.display = "none";
-      fName.style.border = "2px solid #47cc55";
-      form[3] = 1;
-    }
-    checkAll();
-  }
-  const checkLName = () => {
-    let lName = document.getElementById("lName");
-    let lNameError = document.getElementById("lNameError");
-    if (lName.value === "") {
-      lNameError.style.display = "inline";
-      lName.style.border = "2px solid #ee6d69";
-      form[4] = 0;
-    } else {
-      lNameError.style.display = "none";
-      lName.style.border = "2px solid #47cc55";
-      form[4] = 1;
-    }
-    checkAll();
-  }
-  const checkTel = (req, res) => {
+		if (password.value !== confirmPass.value) {
+			confirmPassInvalidError.style.display = "inline";
+			confirmPass.style.border = "2px solid #ee6d69";
+			form[2] = 0;
+		} else {
+			confirmPassInvalidError.style.display = "none";
+			confirmPass.style.border = "2px solid #47cc55";
+			form[2] = 1;
+		}
+		checkAll();
+	}
+	const checkFName = () => {
+		let fName = document.getElementById("fName");
+		let fNameError = document.getElementById("fNameError");
+		if (fName.value === "") {
+			fNameError.style.display = "inline";
+			fName.style.border = "2px solid #ee6d69";
+			form[3] = 0;
+		} else {
+			fNameError.style.display = "none";
+			fName.style.border = "2px solid #47cc55";
+			form[3] = 1;
+		}
+		checkAll();
+	}
+	const checkLName = () => {
+		let lName = document.getElementById("lName");
+		let lNameError = document.getElementById("lNameError");
+		if (lName.value === "") {
+			lNameError.style.display = "inline";
+			lName.style.border = "2px solid #ee6d69";
+			form[4] = 0;
+		} else {
+			lNameError.style.display = "none";
+			lName.style.border = "2px solid #47cc55";
+			form[4] = 1;
+		}
+		checkAll();
+	}
+	const checkTel = (req, res) => {
 
-  }
+	}
 
-  const checkAll = () => {
-    if (form.reduce((a, b) => a+b, 0) === form.length) {
-      console.log("Condition satisfied");
-    } else {
-      console.log("Condition not satisfied:", form.reduce((a, b) => a+b, 0));
-    }
-  }
+	const checkAll = () => {
+		if (form.reduce((a, b) => a+b, 0) === form.length) {
+			console.log("Condition satisfied");
+		} else {
+			console.log("Condition not satisfied:", form.reduce((a, b) => a+b, 0));
+		}
+	}
 </script>
