@@ -55,73 +55,121 @@ db.sequelize.sync().then(async () => {
     // AMADEUS
 
     // FLIGHTSTATS
-    /*
-    const options = {
+    
+    // auto-populate planeModels
+    let options;
+    await db.planeModel.count().then(async numPlaneModels => {
+        if (numPlaneModels === 0) {
+            options = {
+                method: "GET",
+                url: "https://api.flightstats.com/flex/equipment/rest/v1/json/all",
+                headers: {
+                    appId: "fd6db579",
+                    appKey: "3b61de257c2e01cb9c3d3442ac673361",
+                },
+            }
+            try {
+                const aircraft = await axios.request(options);
+                const { equipment } = aircraft.data;
+                equipment.forEach(async planeModel => {
+                    await db.planeModel.create({
+                        iata: planeModel.iata,
+                        modelName: planeModel.name,
+                    });
+                })
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    });
+    
+    options = {
         method: "GET",
         url: "https://api.flightstats.com/flex/schedules/rest/v1/json/from/JFK/departing/2023/4/28/13",
         headers: {
             appId: "fd6db579",
-            appKey: "3b61de257c2e01cb9c3d3442ac673361"
-        }
-    };
-    try {
-        const response = await axios.request(options);
-        const { scheduledFlights } = response.data;
-        scheduledFlights.forEach(element => {
-            console.log(element);
-        })
-    } catch (err) {
-        console.log(err);
-    }
-    */
-
-    // AERODATABOX
-    /*
-    // query aerodatabox for flights flying to/from JFK over the next 11 hours
-    let dStart = new Date();
-    let dEnd = new Date();
-    dEnd.setHours(dStart.getHours() + 11);
-    dStart = toIsoString(dStart);
-    dEnd = toIsoString(dEnd);
-    const options = {
-        method: 'GET',
-        url: 'https://aerodatabox.p.rapidapi.com/flights/airports/iata/JFK/' + dStart + '/' + dEnd,
-        params: {
-            withCancelled: 'false',
-            withCodeshared: 'true',
-            withCargo: 'false',
-            withPrivate: 'false',
-            withLocation: 'false'
+            appKey: "3b61de257c2e01cb9c3d3442ac673361",
         },
-        headers: {
-            'content-type': 'application/octet-stream',
-            'X-RapidAPI-Key': 'b6bd7f3f44mshc9228f8f9eb4c25p138c47jsn9181c49ffc94',
-            'X-RapidAPI-Host': 'aerodatabox.p.rapidapi.com'
-        }
     };
     try {
         const flights = await axios.request(options);
-        const { departures, arrivals } = flights.data;
-
+        const { scheduledFlights } = flights.data;
+        let departure, arrival, modelId;
+        await scheduledFlights.forEach(async f => {
+            departure = new Date(f.departureTime);
+            arrival = new Date(f.arrivalTime);
+            await db.flight.create({
+                sourceAirport: f.departureAirportFsCode,
+                destinationAirport: f.arrivalAirportFsCode,
+                departureTime: departure,
+                arrivalTime: arrival,
+                duration: (arrival - departure)/(1000*60),
+                airline: f.carrierFsCode,
+                flightNumber: f.flightNumber,
+                planeModelId: f.flightEquipmentIataCode,
+            });
+        });
+        console.log("Finished populating database!");
     } catch (err) {
-        console.error(err);
+        console.log(err);
     }
-    */
+
+    // AERODATABOX
+    // query aerodatabox for flights flying to/from JFK over the next 11 hours
+    // let dStart = new Date();
+    // let dEnd = new Date();
+    // dEnd.setHours(dStart.getHours() + 11);
+    // dStart = toIsoString(dStart);
+    // dEnd = toIsoString(dEnd);
+    // const options = {
+    //     method: 'GET',
+    //     url: 'https://aerodatabox.p.rapidapi.com/flights/airports/iata/JFK/' + dStart + '/' + dEnd,
+    //     params: {
+    //         withCancelled: 'false',
+    //         withCodeshared: 'false',
+    //         withCargo: 'false',
+    //         withPrivate: 'false',
+    //         withLocation: 'false'
+    //     },
+    //     headers: {
+    //         'content-type': 'application/octet-stream',
+    //         'X-RapidAPI-Key': 'b6bd7f3f44mshc9228f8f9eb4c25p138c47jsn9181c49ffc94',
+    //         'X-RapidAPI-Host': 'aerodatabox.p.rapidapi.com'
+    //     }
+    // };
+    // try {
+    //     const res = await axios.request(options);
+    //     const { departures, arrivals } = res.data;
+    //     departures.forEach(async flight => {
+    //         if (flight.movement.airport.iata !== undefined) {
+    //             await db.flight.create({
+    //                 sourceAirport: "JFK",
+    //                 destinationAirport: flight.movement.airport.iata,
+    //                 departureTime: flight.movement.airport.scheduledTimeUtc,
+    //                 arrivalTime: ,
+    //                 duration: ,
+    //                 airline: ,
+    //                 basePrice: 0,
+    //                 numSold: 0
+    //             })
+    //         }
+    //     });
+    // } catch (err) {
+    //     console.error(err);
+    // }
+
 
     // SKELETON FOR CREATING FLIGHTS
-    /*
-    await db.flight.create({
-        sourceAirport: ,
-        destinationAirport: ,
-        departureTime: ,
-        arrivalTime: ,
-        duration: ,
-        airline: ,
-        basePrice: ,
-        numSold: ,
-    })
-    */
-
+    // await db.flight.create({
+    //     sourceAirport: ,
+    //     destinationAirport: ,
+    //     departureTime: ,
+    //     arrivalTime: ,
+    //     duration: ,
+    //     airline: ,
+    //     basePrice: ,
+    //     numSold: ,
+    // })
     
     app.listen(PORT, () => {
         console.log(`Server listening at http://localhost:${PORT}`);
@@ -255,5 +303,5 @@ db.sequelize.sync().then(async () => {
     */
 
 }).catch(err => {
-    console.log("Could not start database.");
+    console.log("Could not start database:", err);
 });

@@ -2,18 +2,23 @@ module.exports = (sequelize, DataTypes) => {
 
     const planeModel = sequelize.define("planeModel", {
 
+        iata: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            primaryKey: true,
+        },
         modelName: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        totalOccupancy: {
-            type: DataTypes.BIGINT,
-            allowNull: false,
-        },
+        // totalOccupancy: {
+        //     type: DataTypes.BIGINT,
+        //     allowNull: false,
+        // },
 
     });
 
-    planeModel.associate = (models) => {
+    planeModel.associate = models => {
         planeModel.hasMany(models.seatPosition, {
             foreignKey: "planeModelId",
             allowNull: false,

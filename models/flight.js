@@ -26,9 +26,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        flightNumber: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         basePrice: {
             type: DataTypes.FLOAT,
             allowNull: false,
+            defaultValue: 0,
         },
         numSold: {
             type: DataTypes.BIGINT,
