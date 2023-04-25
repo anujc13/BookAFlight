@@ -2,7 +2,7 @@ const { customer } = require("../models");
 const { booking } = require("../models");
 const { ticket } = require("../models");
 const stripe = require("stripe")("sk_test_51MpHOVFvgDsA0B2SrxeC2mgQXnVGQEF4bfGNUURf54qVdCdHCA0dotnOQOd6ig5DGi1hJlFsoVuhPbm7BrvU7mCb00uZC3KmXW");
-
+const client = require('twilio')('ACe442c2772b48760a1f1ae5d9f37a6cc8', '85e1a23f7430ab54c9cbb47c2c9c6a00')
 // reserve booking - must be logged in
 exports.reserve = async (req, res) => {
 
@@ -42,6 +42,8 @@ exports.reserve = async (req, res) => {
 // booking checkout
 exports.checkout = async (req, res) => {
     const { bookingId } = req.body;
+    const { customerId}  = req.body;
+    const {flightId } = req.body;
 
     // find corresponding booking
     await ticket.findAll({ where: { "bookingId": bookingId } }).then(async match => {
@@ -68,12 +70,40 @@ exports.checkout = async (req, res) => {
         } catch (e) {
             res.status(500).json({ error: e });
         }
+        await customer.findAll({where:{"customerId": customerId}}).then(async match => {
+            try{
+                const phoneNumber = customer.phone;
+                await flight.findALL({where: {"flightId": flightId}}).then(async match =>{
+                    try{
+                    const departure = flight.sourceAirport;
+                    const destination = flight.destinationAirport;
+                    const deptTime = flight.departureTime;
+                    const airline = flight.airline;
+                    const message = "Your flight was successfully booked! Leaving "+ departure + " at " + deptTime + " on "+ airline +" to "+destination;
+                    client.messages.create({
+                        to: phoneNumber,
+                        from: '+18442948043',
+                        body: message}).then((message) => {
+                            console.log('Message sent:', message.sid);
+                        }).catch((err)=>{
+                            console.error('Error sending message:', err);
+                        });
+                    } catch(e) {
+                        res.status(500)
+                    }
+                    })
+                }
+            catch(e) {
+                res.status(500).json({error:e});
+            }
+    
     });
-};
+
+});
 
 /*
 // cancel booking
 exports.cancel = async (req, res) => {
 
 };
-*/
+*/}
