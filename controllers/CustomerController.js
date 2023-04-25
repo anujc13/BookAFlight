@@ -22,6 +22,17 @@ exports.signup = async (req, res) => {
     const profile = req.body;
     const user = await customer.findOne({ where: { email: profile.email }});
     // check if user exists
+    
+    // if (
+    //     !/^[^@]+@[^@]+\.[^@]+$/.test(profile.email) ||
+    //     user ||
+    //     !/^(?=.*[\d\W])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/.test(profile.password) ||
+    //     profile.password !== profile.confirmPassword ||
+    //     profile.firstName === "" ||
+    //     profile.lastName === "" ||
+        
+    // )
+
     if (user) return res.status(400).json({ error: "Email already taken!" });
     
     // create account, hashing password

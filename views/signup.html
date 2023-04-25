@@ -29,20 +29,26 @@
             </label><br/>
             
             <label for="confirmPass">Confirm Password: 
-                <input type="password" id="confirmPass" style="border-radius: 5px;" onblur="checkConfirmPass()" required>
+                <input type="password" id="confirmPass" name="confirmPass" style="border-radius: 5px;" onblur="checkConfirmPass()" required>
                 <span id="confirmPassInvalidError" style="display: none; color: red;">Passwords must match.</span>
             </label><br/>
 
             <label for="fName">First Name: 
-                <input type="text" id="fName" name="fName" style="border-radius: 5px;" onblur="checkFName()" required>
+                <input type="text" id="fName" name="firstName" style="border-radius: 5px;" onblur="checkFName()" required>
                 <span id="fNameError" style="display: none; color: red;">This field is required.</span>
             </label><br/>
 
             <label for="lName">Last Name: 
-                <input type="text" id="lName" name="lName" style="border-radius: 5px;" onblur="checkLName()" required>
+                <input type="text" id="lName" name="lastName" style="border-radius: 5px;" onblur="checkLName()" required>
                 <span id="lNameError" style="display: none; color: red;">This field is required.</span>
             </label><br/>
             
+            <label for="dob">Date of Birth:
+                <input type="date" id="dob" name="dob" min="1900-01-01" style="border-radius: 5px;" onblur="checkDOB()" required>
+                <span id="dobAgeError" style="display: none; color: red;">You must be at least 21 years old to create an account.</span>
+                <span id="dobInvalidError" style="display: none; color: red;">Invalid date.</span>
+            </label><br/>
+
             <label for="tel">Phone Number: 
                 <input type="tel" id="tel" name="tel" style="border-radius: 5px;" onblur="checkTel()" required>
                 <span id="telError" style="display: none; color: red;">This field is required.</span>
@@ -58,7 +64,10 @@
 </html>
 
 <script type="text/javascript">
-    const form = new Array(7).fill(0);
+    const form = new Array(8).fill(0);
+    const today = new Date();
+    document.getElementById("dob").max = new Date().toISOString().split("T")[0];
+    console.log(new Date().toISOString().split("T")[0]);
     const checkEmail = async () => {
         let email = document.getElementById("email");
         let emailRegex = /^[^@]+@[^@]+\.[^@]+$/;
@@ -157,15 +166,48 @@
         }
         checkAll();
     }
+    const checkDOB = () => {
+        let dob = document.getElementById("dob");
+        let birth = new Date(dob.value);
+        let dobInvalidError = document.getElementById("dobInvalidError");
+        let dobAgeError = document.getElementById("dobAgeError");
+        let age = today.getFullYear() - birth.getFullYear();
+        let monthDiff = today.getMonth() - birth.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+        if (birth.getFullYear() < 1900 || birth > today) {
+            dobInvalidError.style.display = "inline";
+            dob.style.border = "2px solid #ee6d69";
+            dobAgeError.style.display = "none";
+            form[5] = 0;
+            checkAll();
+            return;
+        } else {
+            dobInvalidError.style.display = "none";
+        }
+        if (age < 21) {
+            dobAgeError.style.display = "inline";
+            dob.style.border = "2px solid #ee6d69";
+            form[5] = 0;
+        } else {
+            dobAgeError.style.display = "none";
+            dob.style.border = "2px solid #47cc55";
+            form[5] = 1;
+        }
+        checkAll();
+    }
+
     const checkTel = (req, res) => {
 
     }
 
     const checkAll = () => {
-        if (form.reduce((a, b) => a+b, 0) === form.length) {
-            console.log("Condition satisfied");
+        let fields = form.reduce((a, b) => a + b, 0);
+        if (fields === form.length) {
+            console.log("Field filled out!");
         } else {
-            console.log("Condition not satisfied:", form.reduce((a, b) => a+b, 0));
+            console.log(form.length - fields, " fields left.");
         }
     }
 </script>
