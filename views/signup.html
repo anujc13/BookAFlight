@@ -4,6 +4,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create an Account</title>
+    <link
+     rel="stylesheet"
+     href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"
+   />
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body onload="checkAll()"">
     <form action="/signup" method="POST">
@@ -49,10 +55,19 @@
                 <span id="dobInvalidError" style="display: none; color: red;">Invalid date.</span>
             </label><br/>
 
-            <label for="tel">Phone Number: 
+          <!--  <label for="tel">Phone Number: 
                 <input type="tel" id="tel" name="tel" style="border-radius: 5px;" onblur="checkTel()" required>
                 <span id="telError" style="display: none; color: red;">This field is required.</span>
-            </label><br/>
+            </label><br/>-->
+
+            <div class="container">
+                <form id="login" onsubmit="process(event)">
+                  <p>Phone number:</p>
+                  <input id="phone" type="tel" name="phone" />
+                </form>
+               </div>
+
+            <div class="g-recaptcha" data-sitekey="6LdKfLklAAAAAJFQQ-1pdWBh1Wx88b8MAryWG8_q"></div>
 
             <button type="submit" disabled>Create Account</button>
             <div class="error">
@@ -61,6 +76,13 @@
         </fieldset>
     </form>
 </body>
+<script>
+    const phoneInputField = document.querySelector("#phone");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+      utilsScript:
+        "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+  </script>
 </html>
 
 <script type="text/javascript">
