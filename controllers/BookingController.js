@@ -45,7 +45,6 @@ exports.checkout = async (req, res) => {
 
     // find corresponding booking
     await ticket.findAll({ where: { "bookingId": bookingId } }).then(async match => {
-        
         try {
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ["card"],
@@ -70,7 +69,6 @@ exports.checkout = async (req, res) => {
             res.status(500).json({ error: e });
         }
     });
-    
 };
 
 /*

@@ -54,7 +54,7 @@
                 <span id="telError" style="display: none; color: red;">This field is required.</span>
             </label><br/>
 
-            <button type="submit">Create Account</button>
+            <button type="submit" disabled>Create Account</button>
             <div class="error">
                 <!-- display error message here (if any) -->
             </div>
@@ -204,10 +204,13 @@
 
     const checkAll = () => {
         let fields = form.reduce((a, b) => a + b, 0);
+        let button = documnet.getElementById("submit");
         if (fields === form.length) {
             console.log("Field filled out!");
+            button.removeAttribute("disabled");
         } else {
             console.log(form.length - fields, " fields left.");
+            button.setAttribute("disabled", "");
         }
     }
 </script>
