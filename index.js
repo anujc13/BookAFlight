@@ -3,6 +3,7 @@ const db = require("./models");
 const axios = require("axios");
 const express = require("express");
 const Amadeus = require("amadeus");
+const { planeModel } = require("./models");
 const app = express();
 const PORT = 3000;
 
@@ -34,6 +35,8 @@ app.use((req, res) => {
     res.sendFile(path.join(__dirname, "/views/invalidpage.html"));
 });
 
+const { Op } = require("sequelize");
+
 const toIsoString = date => {
     let tzo = -date.getTimezoneOffset(),
         pad = num => {
@@ -54,10 +57,9 @@ const amadeus = new Amadeus({
 
 db.sequelize.sync().then(async () => {
 
-    // AMADEUS
-
     // FLIGHTSTATS
     // auto-populate planeModels
+    
     let options;
     await db.planeModel.count().then(async numPlaneModels => {
         if (numPlaneModels === 0) {
@@ -71,7 +73,7 @@ db.sequelize.sync().then(async () => {
             }
             try {
                 const aircraft = await axios.request(options);
-                const { equipment } = aircraft.data;
+                const { equipment } = aicrcraft.data;
                 equipment.forEach(async planeModel => {
                     await db.planeModel.create({
                         iata: planeModel.iata,
@@ -83,10 +85,10 @@ db.sequelize.sync().then(async () => {
             }
         }
     });
-    
+    let today = new Date();
     options = {
         method: "GET",
-        url: "https://api.flightstats.com/flex/schedules/rest/v1/json/from/JFK/departing/2023/4/28/13",
+        url: "https://api.flightstats.com/flex/schedules/rest/v1/json/from/JFK/departing/"+today.getFullYear()+"/"+(today.getMonth() + 1)+"/"+today.getDate()+"/12",
         headers: {
             appId: "fd6db579",
             appKey: "3b61de257c2e01cb9c3d3442ac673361",
@@ -114,6 +116,21 @@ db.sequelize.sync().then(async () => {
     } catch (err) {
         console.log(err);
     }
+    // amadeus.shopping.flightOffers.get({
+    //     originLocationCode: "JFK",
+    //     destinationLocationCode: "MAD"
+    // }).then(res => {
+    //     console.log(res);
+    // })
+
+    // amadeus tutorial
+    /*
+    amadeus.shopping.seatmaps.get({
+
+    }).then(res => {
+        console.log(res);
+    })
+    */
 
     // AERODATABOX
     // query aerodatabox for flights flying to/from JFK over the next 11 hours
@@ -171,7 +188,53 @@ db.sequelize.sync().then(async () => {
     //     basePrice: ,
     //     numSold: ,
     // })
-    
+
+
+    await planeModel.findAll({ where: { "iata": { [Op.regexp]: "^73.$" } } }).then(aircraft => {
+        aircraft.forEach(async a => {
+            let modelId = a.iata;
+            // first class
+            for (let i = 3; i < 7; i++) {
+                for (let j = 1; j < 7; j++) {
+                    if (j < 3 || j > 4) {
+                        await db.seatPosition.create({
+                            row: i,
+                            col: j,
+                            class: 2,
+                            planeModelId: modelId,
+                        });
+                    }
+                }
+            }
+            // premium economy
+            for (let i = 7; i < 16; i++) {
+                if (i < 10 || i > 13) {
+                    for (let j = 1; j < 7; j++) {
+                        await db.seatPosition.create({
+                            row: i,
+                            col: j,
+                            class: 1,
+                            planeModelId: modelId,
+                        });
+                    }
+                }
+            }
+            // economy
+            for (let i = 10; i < 31; i++) {
+                if (i < 14 || i > 15) {
+                    for (let j = 1; j < 7; j++) {
+                        await db.seatPosition.create({
+                            row: i,
+                            col: j,
+                            class: 0,
+                            planeModelId: modelId,
+                        });
+                    }
+                }
+            }
+        })
+    })
+
     app.listen(PORT, () => {
         console.log(`Server listening at http://localhost:${PORT}`);
     });
