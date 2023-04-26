@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search for Flights</title>
     <script>
+        let sourceComplete = false;
+        let destinationComplete = false;
         let autocompleteSource;
         let autocompleteDestination;
         const initAutocompleteSource = () => {
@@ -31,20 +33,36 @@
             let place = autocompleteSource.getPlace();
             if (!place.geometry) {
                 document.getElementById("autocompleteSource").placeholder = "Airport or city";
+                sourceComplete = false;
             } else {
                 document.getElementById("sourceDetails").innerHTML = place.name;
+                sourceComplete = true;
             }
+            checkComplete();
         }
         const onDestinationChanged = () => {
             let place = autocompleteDestination.getPlace();
             if (!place.geometry) {
                 document.getElementById("autocompleteDestination").placeholder = "Airport or city";
+                destinationComplete = false;
             } else {
                 document.getElementById("destinationDetails").innerHTML = place.name;
+                destinationComplete = true;
+            }
+            checkComplete();
+        }
+        const checkComplete = () => {
+            if (sourceComplete && destinationComplete) {
+
+            } else {
+                
             }
         }
         window.addEventListener('load', initAutocompleteSource);
         window.addEventListener('load', initAutocompleteDestination);
+
+        let submit = document.getElementById("submit");
+        submit.addEventListener("submit", checkComplete())
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvDzMfyE1DH1CM9mNy9IrLAE3bQs-pYCM&libraries=places&callback=initAutocomplete" async defer></script>
 </head>
@@ -61,7 +79,7 @@
             <div>Where are you going to?</div>
             <input id="autocompleteDestination" placeholder="Airport or city" style="width: 400px; border-radius: 5px;" type="text"/>
             <span id="destinationDetails" type="text"></span>
-            <button type="submit">Search</button>
+            <button type="submit" disabled>Search</button>
         </fieldset>
     </form>
 </body>

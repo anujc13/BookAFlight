@@ -4,12 +4,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create an Account</title>
-    <link
-     rel="stylesheet"
-     href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"
-   />
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- <script>
+        const confirmCaptcha = () => {
+            console.log("recaptcha Accepted");
+            // data[7] = 1;
+            // checkAll();
+        }
+        const rejectCaptcha = () => {
+            console.log("recaptcha expired");
+            // data[7] = 0;
+            // checkAll();
+        }
+        const onloadCallback = () => {
+            let recaptchaWidget = grecaptcha.render(document.getElementById("recaptcha"), {
+                "sitekey": "6LdKfLklAAAAAJFQQ-1pdWBh1Wx88b8MAryWG8_q",
+                "data-callback": "confirmCaptcha",
+                "data-expired-callback": "rejectCaptcha",
+                "data-error-callback": rejectCaptcha
+            });
+        }
+        window.onloadCallback = onloadCallback;
+    </script> -->
+    <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 </head>
 <body onload="checkAll()"">
     <form action="/signup" method="POST">
@@ -66,10 +85,8 @@
                   <input id="phone" type="tel" name="phone" />
                 </form>
                </div>
-
-            <div class="g-recaptcha" data-sitekey="6LdKfLklAAAAAJFQQ-1pdWBh1Wx88b8MAryWG8_q"></div>
-
-            <button type="submit" disabled>Create Account</button>
+            <div id="recaptcha"></div>
+            <button id="submit" type="submit" disabled>Create Account</button>
             <div class="error">
                 <!-- display error message here (if any) -->
             </div>
@@ -79,17 +96,14 @@
 <script>
     const phoneInputField = document.querySelector("#phone");
     const phoneInput = window.intlTelInput(phoneInputField, {
-      utilsScript:
-        "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });
-  </script>
+</script>
 </html>
-
 <script type="text/javascript">
     const form = new Array(8).fill(0);
     const today = new Date();
     document.getElementById("dob").max = new Date().toISOString().split("T")[0];
-    console.log(new Date().toISOString().split("T")[0]);
     const checkEmail = async () => {
         let email = document.getElementById("email");
         let emailRegex = /^[^@]+@[^@]+\.[^@]+$/;
@@ -223,10 +237,27 @@
     const checkTel = (req, res) => {
 
     }
+    
+    const confirmCaptcha = () => {
+        form[7] = 1;
+        checkAll();
+    }
+    const rejectCaptcha = () => {
+        form[7] = 0;
+        checkAll();
+    }
+    const onloadCallback = () => {
+        let recaptchaWidget = grecaptcha.render(document.getElementById("recaptcha"), {
+            "sitekey": "6LdKfLklAAAAAJFQQ-1pdWBh1Wx88b8MAryWG8_q",
+            "callback": confirmCaptcha,
+            "expired-callback": rejectCaptcha,
+            "error-callback": rejectCaptcha
+        });
+    }
 
     const checkAll = () => {
         let fields = form.reduce((a, b) => a + b, 0);
-        let button = documnet.getElementById("submit");
+        let button = document.getElementById("submit");
         if (fields === form.length) {
             console.log("Field filled out!");
             button.removeAttribute("disabled");
@@ -235,4 +266,8 @@
             button.setAttribute("disabled", "");
         }
     }
+    window.confirmCaptcha = confirmCaptcha;
+    window.onloadCallback = onloadCallback;
+    window.checkAll = checkAll;
 </script>
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
