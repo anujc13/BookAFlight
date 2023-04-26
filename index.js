@@ -16,6 +16,7 @@ const flightRoute = require("./routes/Flight");
 const planeModelRoute = require("./routes/PlaneModel");
 const seatPositionRoute = require("./routes/SeatPosition");
 const ticketRoute = require("./routes/Ticket");
+const hotelRoute = require("./routes/Hotel");
 
 
 // establish routes, with default going to homepage and none going to invalidpage
@@ -28,6 +29,7 @@ app.use("/flight", flightRoute);
 app.use("/planeModel", planeModelRoute);
 app.use("/seatPosition", seatPositionRoute);
 app.use("/ticket", ticketRoute);
+app.use("/hotel", hotelRoute);
 app.use((req, res) => {
     res.sendFile(path.join(__dirname, "/views/invalidpage.html"));
 });
