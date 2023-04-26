@@ -8,11 +8,9 @@ const { planeModel } = require("./models");
 const app = express();
 const PORT = 3000;
 
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
 
 // import router middleware
 const bookingRoute = require("./routes/Booking");
@@ -23,11 +21,7 @@ const seatPositionRoute = require("./routes/SeatPosition");
 const ticketRoute = require("./routes/Ticket");
 const hotelRoute = require("./routes/Hotel");
 
-
 // establish routes, with default going to homepage and none going to invalidpage
-
-
-
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "/views/index.html"));
 });
@@ -39,7 +33,6 @@ app.use("/seatPosition", seatPositionRoute);
 app.use("/ticket", ticketRoute);
 app.use("/hotel", hotelRoute);
 app.use((req, res) => {
-    
     res.sendFile(path.join(__dirname, "/views/invalidpage.html"));
 });
 
@@ -63,11 +56,11 @@ const amadeus = new Amadeus({
 });
 
 
+
 db.sequelize.sync().then(async () => {
 
     // FLIGHTSTATS
-    // auto-populate planeModels
-    
+    // auto-populate planeModels 
     let options;
     await db.planeModel.count().then(async numPlaneModels => {
         if (numPlaneModels === 0) {
@@ -81,7 +74,7 @@ db.sequelize.sync().then(async () => {
             }
             try {
                 const aircraft = await axios.request(options);
-                const { equipment } = aicrcraft.data;
+                const { equipment } = aircraft.data;
                 equipment.forEach(async planeModel => {
                     await db.planeModel.create({
                         iata: planeModel.iata,

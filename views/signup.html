@@ -183,7 +183,7 @@
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
             age--;
         }
-        if (birth.getFullYear() < 1900 || birth > today) {
+        if (birth.getFullYear() < 1900 || birth > today || dob.value === "") {
             dobInvalidError.style.display = "inline";
             dob.style.border = "2px solid #ee6d69";
             dobAgeError.style.display = "none";

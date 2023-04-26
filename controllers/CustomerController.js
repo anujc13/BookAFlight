@@ -55,7 +55,7 @@ exports.signup = async (req, res) => {
             preferences: profile.preferences,
         });
         
-        return res.sendFile(path.join(__dirname, "../views/signupsuccess"));
+        return res.sendFile(path.join(__dirname, "../views/signupsuccess.html"));
     });
 
     const phoneNumber = profile.phone; 

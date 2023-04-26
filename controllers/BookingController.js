@@ -118,7 +118,7 @@ exports.checkout = async (req, res) => {
         //             try{
         //             const departure = flight.sourceAirport;
         //             const destination = flight.destinationAirport;
-        //             const deptTime = flight.departureTime;
+        //          g   const deptTime = flight.departureTime;
         //             const airline = flight.airline;
         //             const message = "Your flight was successfully booked! Leaving "+ departure + " at " + deptTime + " on "+ airline +" to "+destination;
         //             client.messages.create({
