@@ -18,6 +18,16 @@
                 }
             );
             autocompleteSource.addListener("place_changed", onSourceChanged);
+            autocompleteSource.addListener("place_changed", function () {
+                var place = autocompleteSource.getPlace();
+                const lat = place.geometry.location.lat();
+                const long = place.geometry.location.lng();
+
+                console.log(lat);
+                console.log(long);
+                const userAction = amadeusCall(lat, long);
+                console.log(userAction);
+            });
         }
         const initAutocompleteDestination = () => {
             autocompleteDestination = new google.maps.places.Autocomplete(
