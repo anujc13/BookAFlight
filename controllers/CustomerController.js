@@ -4,6 +4,8 @@ const { sign } = require("jsonwebtoken");
 const sgMail = require('@sendgrid/mail');
 const path = require("path");
 sgMail.setApiKey("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")
+const client = require('twilio')('ACe442c2772b48760a1f1ae5d9f37a6cc8', '85e1a23f7430ab54c9cbb47c2c9c6a00');
+
 
 
 
@@ -49,6 +51,17 @@ exports.signup = async (req, res) => {
         
         return res.status(200).json("Customer created succesfully!");
     });
+
+    const phoneNumber = profile.phone; 
+    const message = "Welcome " + profile.firstName + " "+ profile.lastName+ " to Book A Flight! Your account has successfully been created";
+                    client.messages.create({
+                        to: phoneNumber,
+                        from: '+18442948043',
+                        body: message}).then((message) => {
+                            console.log('Message sent:', message.sid);
+                        }).catch((err)=>{
+                            console.error('Error sending message:', err);
+                        });
 
     //Confirmation email using twilio sendgrid
     const msg = {

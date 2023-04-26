@@ -57,7 +57,6 @@ db.sequelize.sync().then(async () => {
     // AMADEUS
 
     // FLIGHTSTATS
-    
     // auto-populate planeModels
     let options;
     await db.planeModel.count().then(async numPlaneModels => {

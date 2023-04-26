@@ -1,8 +1,12 @@
 const { customer } = require("../models");
+const { flight } = require("../models");
 const { booking } = require("../models");
 const { ticket } = require("../models");
 const stripe = require("stripe")("sk_test_51MpHOVFvgDsA0B2SrxeC2mgQXnVGQEF4bfGNUURf54qVdCdHCA0dotnOQOd6ig5DGi1hJlFsoVuhPbm7BrvU7mCb00uZC3KmXW");
-const client = require('twilio')('ACe442c2772b48760a1f1ae5d9f37a6cc8', '85e1a23f7430ab54c9cbb47c2c9c6a00')
+const client = require('twilio')('ACe442c2772b48760a1f1ae5d9f37a6cc8', '85e1a23f7430ab54c9cbb47c2c9c6a00');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey("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")
+
 // reserve booking - must be logged in
 exports.reserve = async (req, res) => {
 
@@ -66,20 +70,28 @@ exports.checkout = async (req, res) => {
                 success_url: "http://localhost:3000",
                 cancel_url: "http://localhost:3000",
             });
-            res.json({ url: session.url });
-        } catch (e) {
-            res.status(500).json({ error: e });
-        }
-        await customer.findAll({where:{"customerId": customerId}}).then(async match => {
-            try{
-                const phoneNumber = customer.phone;
-                await flight.findALL({where: {"flightId": flightId}}).then(async match =>{
+            await booking.findOne({ where: { "id": bookingId } }).then(async bookingMatch => {
+                await customer.findOne({ where: { "id": bookingMatch.customerId } }).then(async customerMatch => {
+                    const phoneNumber = customerMatch.phone;
+                    const email = customerMatch.email;
+                    const message = "Booking Confirmed! Thank you for booking with Book-A-Flight";
                     try{
-                    const departure = flight.sourceAirport;
-                    const destination = flight.destinationAirport;
-                    const deptTime = flight.departureTime;
-                    const airline = flight.airline;
-                    const message = "Your flight was successfully booked! Leaving "+ departure + " at " + deptTime + " on "+ airline +" to "+destination;
+                    //Confirmation email using twilio sendgrid
+                    const msg = {
+                     to: email, // Change to your recipient
+                    from: 'udayan19.rai@gmail.com', // Change to your verified sender
+                    subject: 'BookAFlight account creation successful',
+                    text: 'Your Booking was confirmed',
+                    html: '<strong>Enjoy your travelling experience!</strong>',
+        }
+                sgMail
+            .send(msg)
+            .then(() => {
+                console.log('Email sent')
+            })
+            .catch((error) => {
+              console.error(error)
+            })
                     client.messages.create({
                         to: phoneNumber,
                         from: '+18442948043',
@@ -89,21 +101,53 @@ exports.checkout = async (req, res) => {
                             console.error('Error sending message:', err);
                         });
                     } catch(e) {
-                        res.status(500)
+                        console.log(e);
+                        //return res.status(500)
                     }
-                    })
-                }
-            catch(e) {
-                res.status(500).json({error:e});
-            }
-    
-    });
+                })
+            })
+            return res.json({ url: session.url });
+        } catch (e) {
+            res.status(500).json({ error: e });
+        }
+        
+        // await customer.findAll({where:{"id": customerId}}).then(async match => {
+        //     try{
+        //         const phoneNumber = bookingId.phone;
+        //         await flight.findAll({where: {"id": flightId}}).then(async match =>{
+        //             try{
+        //             const departure = flight.sourceAirport;
+        //             const destination = flight.destinationAirport;
+        //             const deptTime = flight.departureTime;
+        //             const airline = flight.airline;
+        //             const message = "Your flight was successfully booked! Leaving "+ departure + " at " + deptTime + " on "+ airline +" to "+destination;
+        //             client.messages.create({
+        //                 to: phoneNumber,
+        //                 from: '+18442948043',
+        //                 body: message}).then((message) => {
+        //                     console.log('Message sent:', message.sid);
+        //                 }).catch((err)=>{
+        //                     console.error('Error sending message:', err);
+        //                 });
+        //             } catch(e) {
+        //                 console.log(e);
+        //                 //return res.status(500)
+        //             }
+        //             })
+        //         }
+        //     catch(e) {
+        //         console.log(e);
+        //         //return res.status(500).json({error:e});
+        //     }
+    }  
+//    });
 
-});
+//});
 
 /*
 // cancel booking
 exports.cancel = async (req, res) => {
 
 };
-*/}
+*/)
+}
