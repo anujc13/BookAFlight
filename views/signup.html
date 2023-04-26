@@ -4,36 +4,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create an Account</title>
-    <!-- <script>
-        const confirmCaptcha = () => {
-            console.log("recaptcha Accepted");
-            // data[7] = 1;
-            // checkAll();
-        }
-        const rejectCaptcha = () => {
-            console.log("recaptcha expired");
-            // data[7] = 0;
-            // checkAll();
-        }
-        const onloadCallback = () => {
-            let recaptchaWidget = grecaptcha.render(document.getElementById("recaptcha"), {
-                "sitekey": "6LdKfLklAAAAAJFQQ-1pdWBh1Wx88b8MAryWG8_q",
-                "data-callback": "confirmCaptcha",
-                "data-expired-callback": "rejectCaptcha",
-                "data-error-callback": rejectCaptcha
-            });
-        }
-        window.onloadCallback = onloadCallback;
-    </script> -->
-    <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
-    <script>
-        document.signup.reset();
-    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 </head>
 <body onload="checkAll()">
-    <form name="signup" action="/signup" method="POST">
+    <form name="signup" action="/customer/signup" method="POST">
         <fieldset>
             <legend>Create an Account</legend>
 
@@ -44,7 +19,7 @@
             </label><br/>
 
             <label for="password">Password: 
-                <input type="password" id="password" style="border-radius: 5px;" onblur="checkPassword()" required>
+                <input type="password" id="password" name="password" style="border-radius: 5px;" onblur="checkPassword()" required>
                 <span id="passInvalidError" style="display: none; color: red;">Invalid password.</span>
                 <p>Password must contain:
                     <div> - 8-20 characters</div>
@@ -77,16 +52,10 @@
             </label><br/>
 
             <label for="tel">Phone Number: 
-                <input type="tel" id="tel" name="tel" style="border-radius: 5px;" onblur="checkTel()" required>
-                <span id="telError" style="display: none; color: red;">Invalid phone number.</span>
+                <input type="tel" id="phone" name="phone" style="border-radius: 5px;" onblur="checkPhone()" required>
+                <span id="phoneError" style="display: none; color: red;">Invalid phone number.</span>
             </label><br/>
 
-            <!-- <div class="container">
-                <form id="login" onsubmit="process(event)">
-                    <p>Phone number:</p>
-                    <input id="phone" type="tel" name="phone"/>
-                </form>
-            </div> -->
             <div id="recaptcha"></div>
             <button id="submit" type="submit" disabled>Create Account</button>
             <div class="error">
@@ -100,11 +69,11 @@
     </script>
 </html>
 <script type="text/javascript">
+    document.signup.reset();
+    let phoneNumber, phoneInput;
     const form = new Array(8).fill(0);
     const today = new Date();
-    const phoneInputField = document.querySelector("#tel");
-    
-    
+    const phoneInputField = document.querySelector("#phone");
     document.getElementById("dob").max = new Date().toISOString().split("T")[0];
     const checkEmail = async () => {
         let email = document.getElementById("email");
@@ -145,7 +114,7 @@
     }
     const checkPassword = (req, res) => {
         let password = document.getElementById("password");
-        let passwordRegex = /^(?=.*[\d\W])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/;
+        let passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
         let passInvalidError = document.getElementById("passInvalidError");
 
         if (!passwordRegex.test(password.value)) {
@@ -236,15 +205,6 @@
         checkAll();
     }
 
-    const checkTel = (req, res) => {
-        const tel = phoneInput.getNumber();
-        if (tel.isValidNumber()) {
-            console.log("asfdjksdfaj");
-        } else {
-            console.log("fialure");
-        }
-    }
-    
     const confirmCaptcha = () => {
         form[7] = 1;
         checkAll();
@@ -273,11 +233,25 @@
             button.setAttribute("disabled", "");
         }
     }
-    window.confirmCaptcha = confirmCaptcha;
     window.onloadCallback = onloadCallback;
-    window.checkAll = checkAll;
-    const phoneInput = window.intlTelInput(phoneInputField, {
+    phoneInput = window.intlTelInput(phoneInputField, {
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });
+
+    const checkPhone = async (req, res) => {
+        let phone = document.getElementById("phone");
+        let phoneError = document.getElementById("phoneError");
+        phoneNumber = phoneInput.getNumber();
+        if (phoneInput.isValidNumber()) {
+            phoneError.style.display = "none";
+            phone.style.border = "2px solid #47cc55";
+            form[6] = 1;
+        } else {
+            phoneError.style.display = "inline";
+            phone.style.border = "2px solid #ee6d69";
+            form[6] = 0;
+        }
+        checkAll();
+    }
 </script>
 <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>

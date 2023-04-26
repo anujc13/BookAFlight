@@ -10,6 +10,7 @@ const controller = require("../controllers/HotelController");
 const router = express.Router();
 
 router.get("/citySearch", controller.citySearch);
+
 router.get("/hotelSearch", controller.hotelSearch);
 
 

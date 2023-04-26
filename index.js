@@ -1,3 +1,4 @@
+const cors = require("cors");
 const path = require("path");
 const db = require("./models");
 const axios = require("axios");
@@ -7,8 +8,11 @@ const { planeModel } = require("./models");
 const app = express();
 const PORT = 3000;
 
+
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
 
 // import router middleware
 const bookingRoute = require("./routes/Booking");
@@ -21,6 +25,9 @@ const hotelRoute = require("./routes/Hotel");
 
 
 // establish routes, with default going to homepage and none going to invalidpage
+
+
+
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "/views/index.html"));
 });
@@ -32,6 +39,7 @@ app.use("/seatPosition", seatPositionRoute);
 app.use("/ticket", ticketRoute);
 app.use("/hotel", hotelRoute);
 app.use((req, res) => {
+    
     res.sendFile(path.join(__dirname, "/views/invalidpage.html"));
 });
 

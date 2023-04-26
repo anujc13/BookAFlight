@@ -6,7 +6,16 @@ const path = require("path");
 sgMail.setApiKey("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")
 const client = require('twilio')('ACe442c2772b48760a1f1ae5d9f37a6cc8', '85e1a23f7430ab54c9cbb47c2c9c6a00');
 
-
+const checkAge = (birth) => {
+    let today = new Date();
+    birth = new Date(birth);
+    let age = today.getFullYear() - birth.getFullYear();
+    let monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+    }
+    return age;
+}
 
 
 // signup page
@@ -23,19 +32,16 @@ exports.loginPage = async (req, res) => {
 exports.signup = async (req, res) => {
     const profile = req.body;
     const user = await customer.findOne({ where: { email: profile.email }});
-    // check if user exists
-    
-    // if (
-    //     !/^[^@]+@[^@]+\.[^@]+$/.test(profile.email) ||
-    //     user ||
-    //     !/^(?=.*[\d\W])(?=.*[a-z])(?=.*[A-Z]).{8,20}$/.test(profile.password) ||
-    //     profile.password !== profile.confirmPassword ||
-    //     profile.firstName === "" ||
-    //     profile.lastName === "" ||
-        
-    // )
-
-    if (user) return res.status(400).json({ error: "Email already taken!" });
+    console.log(profile);
+    if (
+        !/^[^@]+@[^@]+\.[^@]+$/.test(profile.email) ||
+        user ||
+        !/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/.test(profile.password) ||
+        profile.firstName === "" ||
+        profile.lastName === "" ||
+        checkAge(profile.dob) < 21) {
+            return res.status(400).json("Invalid signup!");
+    }
     
     // create account, hashing password
     bcrypt.hash(profile.password, 10).then(async (hash) => {
@@ -49,7 +55,7 @@ exports.signup = async (req, res) => {
             preferences: profile.preferences,
         });
         
-        return res.status(200).json("Customer created succesfully!");
+        return res.sendFile(path.join(__dirname, "../views/signupsuccess"));
     });
 
     const phoneNumber = profile.phone; 
