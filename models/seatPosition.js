@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     seatPosition.associate = (models) => {
         seatPosition.hasMany(models.ticket, {
             foreignKey: "seatPositionId",
+            allowNull: true,
             onDelete: "cascade",
             onUpdate: "cascade",
         });

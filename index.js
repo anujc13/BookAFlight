@@ -57,7 +57,14 @@ const amadeus = new Amadeus({
 
 
 
-db.sequelize.sync().then(async () => {
+db.sequelize.sync({ logging: (...msg) => { 
+    console.log(msg[0]); 
+    if (msg[1].bind) {
+        console.log(msg[1].bind);
+    } else {
+        console.log(msg[1].replacements);
+    }
+} } ).then(async () => {
 
     // FLIGHTSTATS
     // auto-populate planeModels 
@@ -236,12 +243,26 @@ db.sequelize.sync().then(async () => {
         })
     })
 
+    await db.flight.findAll().then(async allFlights => {
+        allFlights.forEach(async flight => {
+            let flightObj = flight.dataValues;
+            await db.ticket.create({
+                price: flightObj.basePrice + (flightObj.duration * 1.5),
+                extraBaggage: 0,
+                mealAvailable: 1,
+                mealOption: 2,
+                purchased: 0,
+                flightId: flightObj.id,
+            });
+        });
+    });
+
     app.listen(PORT, () => {
         console.log(`Server listening at http://localhost:${PORT}`);
     });
 
     /*
-    // manually seeding database
+    // manually seeding database - LEGACY
     db.planeModel.count().then(async numPlaneModels => {
         if (numPlaneModels === 0) {
             // create Boeing 737 plane model

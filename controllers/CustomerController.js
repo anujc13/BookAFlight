@@ -116,7 +116,8 @@ exports.changePassword = async (req, res) => {
     const { oldPassword, newPassword } = req.body;
     const user = await customer.findOne({ where: { id: req.user.id }});
     bcrypt.compare(oldPassword, user.password).then(async (match) => {
-        if (!match) return res.json({ error: "Incorrect password!"})
+        if (!match) return res.json({ error: "Incorrect password!"});
+        if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/.test(newPassword)) return res.status(400).json("Invalid password!");
         bcrypt.hash(newPassword, 10).then(async (hash) => {
             await user.update({password: hash}, {where: { id: user.id }});
             res.status(200).json("Successfully changed password!");
